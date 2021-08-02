@@ -1,0 +1,50 @@
+start: auto
+sandboxed: false
+
+requires:
+{
+    configTree:
+    {
+        [w] voiceCallApp       // Write access to config data.
+    }
+}
+
+executables:
+{
+    voiceCallApp = ( voiceCallComponent)
+    voice = ( ctrlComponent )
+    voiceCallService = ( $LEGATO_ROOT/components/voiceCallService )    
+}
+
+processes:
+{
+    run:
+    {   	
+        ( voiceCallApp )
+        (voiceCallService)
+    }
+    faultAction: restart
+    #if ${LE_CONFIG_SERVICES_WATCHDOG} = y
+        maxWatchdogTimeout: 120000
+    #else
+        watchdogTimeout: never
+    #endif    
+}
+
+
+
+bindings:
+{
+    voiceCallApp.voiceCallComponent.le_voicecall -> voiceCallService.le_voicecall
+    voiceCallApp.voiceCallComponent.le_audio -> audioService.le_audio
+    voice.ctrlComponent.ctrlVC -> voiceCallApp.voiceCallComponent.ctrlVC
+    voiceCallApp.voiceCallComponent.le_sms -> modemService.le_sms
+    voiceCallService.voiceCallService.le_mcc -> modemService.le_mcc
+    voiceCallService.voiceCallService.le_audio -> audioService.le_audio
+    voiceCallService.watchdogChain.le_wdog -> <root>.le_wdog
+}
+
+extern:
+{
+    voiceCallService.voiceCallService.le_voicecall
+}

@@ -1,0 +1,26 @@
+sources:
+{
+    voiceCallApp.c
+    smsMO.c
+    smsMT.c
+}
+
+provides:
+{
+    api:
+    {
+        ctrlVC.api
+    }
+}
+
+requires:
+{
+    api:
+    {
+        le_voicecall.api
+        le_audio.api
+        modemServices/le_mdmDefs.api [types-only]
+        modemServices/le_sms.api
+    }
+}
+
